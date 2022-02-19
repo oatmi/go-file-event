@@ -11,19 +11,26 @@ const (
 )
 
 type Event struct {
-	FilePath string
-	Type     EventType
+	filePath string
+	et       EventType
 }
 
-type Watcher interface {
-	Watch(file string) error
+func (e *Event) File() string {
+	return e.filePath
+}
+
+func (e *Event) Type() EventType {
+	return e.et
 }
 
 type Subscription interface {
 	Unsubscribe()
 	Err() <-chan error
+	Receive() Event
 }
 
-type Subscriber interface {
-	Subscribe(ch chan<- Event) (Subscription, error)
+type Watcher interface {
+	watch(file string) error
+
+	Subscribe(ch chan<- Event, topic int) (Subscription, error)
 }
