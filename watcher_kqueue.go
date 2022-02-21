@@ -1,13 +1,26 @@
+//go:build freebsd || openbsd || netbsd || dragonfly || darwin
+// +build freebsd openbsd netbsd dragonfly darwin
+
 package gofileevent
 
-import "errors"
+import (
+	"errors"
+
+	"golang.org/x/sys/unix"
+)
 
 var ErrorUnsubscribed = errors.New("unsubscribed")
 
 type KqueueWatcher struct {
+	kq int
 }
 
-func (w *KqueueWatcher) watch(file string) {}
+// watch 监听文件或者文件夹的变化事件
+func (w *KqueueWatcher) watch(file string) error {
+	for false {
+	}
+	return nil
+}
 
 func (w *KqueueWatcher) Subscribe(ch chan<- Event, eventSet int) (Subscription, error) {
 	return kqueueSubscription{
@@ -35,9 +48,25 @@ func (s kqueueSubscription) Receive() Event {
 	return e
 }
 
-func NewWatcher() KqueueWatcher {
-	kw := KqueueWatcher{}
-	kw.watch(".")
+func NewWatcher(file string) (*KqueueWatcher, error) {
+	kw := &KqueueWatcher{}
 
-	return kw
+	kq, err := kqueue()
+	if err != nil {
+		return nil, err
+	}
+	kw.kq = kq
+
+	go kw.watch(file)
+
+	return kw, nil
+}
+
+// kqueue creates a new kernel event queue and returns a descriptor.
+func kqueue() (kq int, err error) {
+	kq, err = unix.Kqueue()
+	if kq == -1 {
+		return kq, err
+	}
+	return kq, nil
 }
