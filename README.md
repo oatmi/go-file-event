@@ -1,6 +1,6 @@
 # 基于 kqueue api 的文件变更通知组件
 
-受 [fsnotify/fsnotify](https://github.com/fsnotify/fsnotify) 和 [fis3](https://fis.baidu.com/) 启发使用 go 开发的基于 kqueue 的文件文件变更监听组建，更多平台的轮训 api 计划中。
+受 [fsnotify/fsnotify](https://github.com/fsnotify/fsnotify) 和 [fis3](https://fis.baidu.com/) 启发使用 go 开发的基于 kqueue 的文件文件变更监听组件，更多平台的 poll api 计划中。
 
 | Adapter | OS     |Stat                                    |
 | ------  | ------ | -------------------------------------------- |
